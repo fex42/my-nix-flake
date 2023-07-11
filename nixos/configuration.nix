@@ -59,10 +59,13 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
+  services.xserver.windowManager.hypr.enable = true;
+
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
   programs.hyprland.enable = true;
+  programs.waybar.enable = true;
 
   # Configure keymap in X11
   services.xserver = {
@@ -136,9 +139,22 @@
     alacritty
     spotify
     kitty
-    waybar
     hyprpaper
     bc
+    wofi
+  ];
+
+  fonts.fonts = with pkgs; [
+    font-awesome_5
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -178,4 +194,12 @@
   system.stateVersion = "23.05"; # Did you read the comment?
   
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  nixpkgs.overlays = [
+    (self: super: {
+      waybar = super.waybar.overrideAttrs (oldAttrs: {
+        mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+      });
+    })
+  ];
 }
